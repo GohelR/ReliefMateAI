@@ -1,3 +1,4 @@
+
 # app.py — Polished ReliefMate AI (Streamlit) with OpenAI chat
 import os
 import streamlit as st
@@ -127,7 +128,6 @@ with right:
             }
             st.session_state.reports.append(entry)
             st.success("Report submitted! Volunteers/NGOs (demo) can see it in Recent Reports.")
-            # auto-add to chat history for traceability
             st.session_state.rm_messages.append({"role": "assistant", "content": f"New report saved: {r_type} at {entry['location']}. Thank you."})
 
     st.markdown("## ⚙️ Admin (Demo)")
