@@ -15,10 +15,10 @@ const FloatingOrb = ({ className = "" }) => (
 
 export default function App() {
   const links = {
-    demo: "https://reliefmateai.streamlit.app/",
-    github: "https://github.com/GohelR/ReliefMateAI",
-    email: "mailto:ravigohel226020332021@gmail.com",
-  };
+  demo: "https://reliefmateai811.streamlit.app/",
+  github: "https://github.com/GohelR/ReliefMateAI",
+  email: "mailto:ravi.n.gohel811@gmail.com",
+};
 
   return (
     <div className="min-h-screen w-full bg-slate-950 text-slate-100 overflow-x-hidden">
