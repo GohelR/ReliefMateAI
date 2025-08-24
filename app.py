@@ -726,8 +726,6 @@ if __name__ == "__main__":
 # ----------------------------
 
 # Add this to your secrets.toml file:
-"""
-# .streamlit/secrets.toml
 [general]
 GEMINI_API_KEY = "your_gemini_api_key_here"
 
@@ -738,30 +736,21 @@ DB_URL = "your_database_url"
 [notifications]
 WEBHOOK_URL = "your_webhook_url"
 EMAIL_SERVICE = "your_email_service"
-"""
-
 # ----------------------------
 # 🚀 Deployment Instructions
 # ----------------------------
 
 # 1. Install required packages:
-"""
 pip install streamlit
 pip install google-generativeai
 pip install pandas
 pip install plotly
 pip install datetime
-"""
 
 # 2. Run the application:
-"""
 streamlit run app.py
-"""
 
 # 3. Access the application at:
-"""
-http://localhost:8501
-"""
 
 # ----------------------------
 # 📱 Mobile Responsive Features
