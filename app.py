@@ -309,7 +309,8 @@ def setup_gemini():
     # READ from [general] section in .streamlit/secrets.toml
     GEMINI_KEY = None
     try:
-        GEMINI_KEY = st.secrets["general"]["GEMINI_API_KEY"]
+        [general]
+        GEMINI_API_KEY = "your_actual_key_here"
     except Exception:
         pass
 
