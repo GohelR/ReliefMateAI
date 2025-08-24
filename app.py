@@ -306,13 +306,22 @@ def inject_custom_css():
 # 🔑 Gemini API Setup
 # ----------------------------
 def setup_gemini():
-    # READ from [general] section in .streamlit/secrets.toml
-    GEMINI_KEY = None
+    # Correct way to read from Streamlit secrets
     try:
-        [general]
-        GEMINI_API_KEY = "your_actual_key_here"
-    except Exception:
-        pass
+        GEMINI_KEY = st.secrets["general"]["GEMINI_API_KEY"]
+    except (KeyError, FileNotFoundError):
+        GEMINI_KEY = None
+        st.warning("Gemini API key not found in secrets.toml")
+    
+    if GEMINI_KEY:
+        try:
+            genai.configure(api_key=GEMINI_KEY)
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            return model, "✅ Gemini AI Connected"
+        except Exception as e:
+            return None, f"❌ API Error: {str(e)[:50]}..."
+    else:
+        return None, "⚠️ Demo Mode (Add [general].GEMINI_API_KEY to secrets)"
 
     if GEMINI_KEY:
         try:
