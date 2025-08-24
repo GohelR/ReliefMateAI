@@ -1040,5 +1040,3 @@ print("🚀 To run: streamlit run app.py")
 print("🔑 Add your Gemini API key to .streamlit/secrets.toml")
 print("")
 print("🌟 No additional dependencies required - uses Streamlit built-in charts!")
-
-"what error in dashboard ??" "why" my repository : https://github.com/GohelR/ReliefMateAI/tree/main
