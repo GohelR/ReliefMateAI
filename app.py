@@ -1,43 +1,31 @@
+# ---------------- Gemini AI Setup ----------------
+import os
 import streamlit as st
 import google.generativeai as genai
 
-# Load Gemini API key from secrets
-api_key = st.secrets["general"]["GEMINI_API_KEY"]
+def get_gemini_api_key():
+    """Get Gemini API key from Streamlit secrets or environment variable."""
+    try:
+        if "general" in st.secrets and "GEMINI_API_KEY" in st.secrets["general"]:
+            return st.secrets["general"]["GEMINI_API_KEY"]
+    except Exception:
+        pass  # st.secrets might not be available yet
 
-# Configure Gemini
-genai.configure(api_key=api_key)
+    env_key = os.getenv("GEMINI_API_KEY")
+    if env_key:
+        return env_key
 
-# Create model instance
-model = genai.GenerativeModel("gemini-1.5-flash")
+    return None
 
-st.set_page_config(page_title="Gemini Chatbot", page_icon="🤖", layout="centered")
-
-st.title("🤖 Gemini AI Chatbot")
-st.write("Chat with Google's Gemini inside Streamlit!")
-
-# Initialize chat history
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Display chat history
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-
-# Input box
-if prompt := st.chat_input("Type your message..."):
-    # Add user message
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    # Gemini response
-    with st.chat_message("assistant"):
-        try:
-            response = model.generate_content(prompt)
-            reply = response.text
-        except Exception as e:
-            reply = f"⚠️ Error: {e}"
-
-        st.markdown(reply)
-        st.session_state.messages.append({"role": "assistant", "content": reply})
+def setup_gemini():
+    """Configure Gemini AI if key exists, else run in demo mode."""
+    api_key = get_gemini_api_key()
+    if not api_key:
+        st.warning("⚠️ Gemini API key not found. Running in demo mode.")
+        return None, "⚠️ Demo Mode (no GEMINI_API_KEY)"
+    try:
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        return model, "✅ Gemini AI Connected"
+    except Exception as e:
+        return None, f"❌ API Error: {str(e)[:80]}"
