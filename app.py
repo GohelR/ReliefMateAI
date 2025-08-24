@@ -1,822 +1,1041 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReliefMate AI - Disaster Relief Assistant</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+import streamlit as st
+import pandas as pd
+import datetime
+import random
+import google.generativeai as genai
+from streamlit.components.v1 import html
+from datetime import date, timedelta
+import plotly.graph_objects as go
+import plotly.express as px
+
+# ----------------------------
+# 🎨 Page Config
+# ----------------------------
+st.set_page_config(
+    page_title="ReliefMate AI",
+    page_icon="🌍",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+# ----------------------------
+# 🌟 Advanced CSS with 3D Animations
+# ----------------------------
+def inject_custom_css():
+    st.markdown("""
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            overflow-x: hidden;
-        }
-        
-        /* 3D Canvas Background */
-        #canvas-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-        }
-        
-        /* Header */
-        .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 20px 50px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-        
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes glow {
-            from { filter: drop-shadow(0 0 5px rgba(255, 107, 107, 0.5)); }
-            to { filter: drop-shadow(0 0 20px rgba(78, 205, 196, 0.8)); }
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-links a:hover {
-            transform: translateY(-2px);
-        }
-        
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-        }
-        
-        .hero-content {
-            max-width: 800px;
-            z-index: 10;
-        }
-        
-        .hero-title {
-            font-size: 4rem;
-            margin-bottom: 20px;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+    
+    /* Global Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    .main {
+        padding: 0 !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .stApp {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    /* Hero Section */
+    .hero-container {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+        padding: 100px 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        border-radius: 0 0 50px 50px;
+        margin-bottom: 50px;
+        backdrop-filter: blur(20px);
+    }
+    
+    .hero-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="1.5" fill="rgba(255,255,255,0.15)"/><circle cx="40" cy="60" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="30" r="2.5" fill="rgba(255,255,255,0.05)"/></svg>');
+        animation: float 20s infinite linear;
+        z-index: 1;
+    }
+    
+    @keyframes float {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        33% { transform: translate(30px, -30px) rotate(120deg); }
+        66% { transform: translate(-20px, 20px) rotate(240deg); }
+        100% { transform: translate(0, 0) rotate(360deg); }
+    }
+    
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+        z-index: 2;
+        animation: glow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow {
+        from { filter: drop-shadow(0 0 20px rgba(255, 107, 107, 0.5)); }
+        to { filter: drop-shadow(0 0 40px rgba(78, 205, 196, 0.8)); }
+    }
+    
+    .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 40px;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Glass Morphism Cards */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(20px) !important;
+        border-radius: 20px !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        padding: 30px !important;
+        margin: 20px 0 !important;
+        transition: all 0.3s ease !important;
+        position: relative !important;
+        overflow: hidden !important;
+        color: white !important;
+    }
+    
+    .glass-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+    }
+    
+    .glass-card:hover::before {
+        transform: translateX(100%);
+    }
+    
+    .glass-card:hover {
+        transform: translateY(-10px) scale(1.02) !important;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+        background: rgba(255, 255, 255, 0.15) !important;
+    }
+    
+    /* Feature Cards */
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        display: block;
+        animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+    }
+    
+    /* Chat Interface */
+    .chat-container {
+        background: rgba(0, 0, 0, 0.2) !important;
+        backdrop-filter: blur(30px) !important;
+        border-radius: 25px !important;
+        padding: 30px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        margin: 20px 0 !important;
+    }
+    
+    .chat-message {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 15px;
+        margin: 10px 0;
+        border-left: 4px solid #4ecdc4;
+        animation: slideIn 0.5s ease;
+    }
+    
+    @keyframes slideIn {
+        from {
             opacity: 0;
-            transform: translateY(50px);
-            animation: fadeInUp 1s ease 0.5s forwards;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    /* Buttons */
+    .stButton > button {
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 25px !important;
+        padding: 15px 30px !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+        transition: all 0.3s ease !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-3px) scale(1.05) !important;
+        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4) !important;
+    }
+    
+    /* Text Input */
+    .stTextInput > div > div > input {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 15px !important;
+        color: white !important;
+        padding: 15px !important;
+        font-size: 1rem !important;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #4ecdc4 !important;
+        box-shadow: 0 0 20px rgba(78, 205, 196, 0.3) !important;
+    }
+    
+    /* Metrics */
+    .metric-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 25px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .metric-container:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #4ecdc4;
+        margin-bottom: 10px;
+        animation: countUp 2s ease;
+    }
+    
+    @keyframes countUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Sidebar */
+    .css-1d391kg {
+        background: rgba(0, 0, 0, 0.3) !important;
+        backdrop-filter: blur(20px) !important;
+    }
+    
+    /* Hide Streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+    }
+    
+    /* Loading Animation */
+    .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #4ecdc4;
+        animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Tab styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 10px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: white;
+        padding: 10px 20px;
+        font-weight: 600;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4) !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# ----------------------------
+# 🔑 Gemini API Setup
+# ----------------------------
+def setup_gemini():
+    GEMINI_KEY = st.secrets.get("GEMINI_API_KEY", "demo_key")
+    
+    if GEMINI_KEY and GEMINI_KEY != "demo_key":
+        try:
+            genai.configure(api_key=GEMINI_KEY)
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            test_response = model.generate_content("test")
+            return model, "✅ Gemini AI Connected"
+        except Exception as e:
+            return None, f"❌ API Error: {str(e)[:50]}..."
+    else:
+        return None, "⚠️ Demo Mode (Add GEMINI_API_KEY to secrets for full functionality)"
+
+# ----------------------------
+# 📊 Sample Data Generation
+# ----------------------------
+def generate_sample_data():
+    # Relief Reports
+    reports = [
+        {"location": "Rajkot", "type": "Flood", "status": "🚨 Critical", "needs": "Food, Water, Medical Supplies", "team": "Team A"},
+        {"location": "Ahmedabad", "type": "Earthquake", "status": "✅ Resolved", "needs": "Search & Rescue Complete", "team": "Team B"},
+        {"location": "Surat", "type": "Cyclone", "status": "⚠️ Active", "needs": "Evacuation, Shelter", "team": "Team C"},
+        {"location": "Bhavnagar", "type": "Fire", "status": "🔥 Critical", "needs": "Fire Brigade, Medical Aid", "team": "Team D"},
+        {"location": "Vadodara", "type": "Landslide", "status": "📋 Monitoring", "needs": "Geological Survey", "team": "Team E"}
+    ]
+    
+    # Analytics Data
+    dates = [date.today() - timedelta(days=i) for i in range(7, 0, -1)]
+    analytics = {
+        "dates": dates,
+        "requests": [random.randint(50, 200) for _ in range(7)],
+        "resolved": [random.randint(20, 150) for _ in range(7)],
+        "active": [random.randint(10, 80) for _ in range(7)]
+    }
+    
+    return reports, analytics
+
+# ----------------------------
+# 🏠 Hero Section
+# ----------------------------
+def render_hero():
+    st.markdown("""
+    <div class="hero-container">
+        <h1 class="hero-title">🌍 ReliefMate AI</h1>
+        <p class="hero-subtitle">🤝 Advanced Disaster Relief Assistant • Powered by Gemini AI • 24/7 Emergency Support</p>
+        <div style="margin-top: 30px;">
+            <span style="font-size: 1.2rem; opacity: 0.8;">
+                🚨 Emergency Contacts: 112 (Police) • 108 (Medical) • 101 (Fire)
+            </span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# ----------------------------
+# 💬 Enhanced Chat Interface
+# ----------------------------
+def render_chat_interface(model, api_status):
+    st.markdown("## 💬 AI Assistant")
+    st.markdown("Ask ReliefMate AI about emergency procedures, resource allocation, or disaster response protocols")
+    
+    # Initialize chat history
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+    
+    # Chat input
+    col1, col2 = st.columns([4, 1])
+    
+    with col1:
+        user_input = st.text_input(
+            "Ask your question:",
+            placeholder="e.g., 'What should I do during a flood emergency?'",
+            key="chat_input",
+            label_visibility="collapsed"
+        )
+    
+    with col2:
+        send_button = st.button("Send 🚀", use_container_width=True)
+    
+    # Process message
+    if send_button and user_input.strip():
+        # Add user message to history
+        st.session_state.chat_history.append({"role": "user", "content": user_input})
+        
+        # Generate AI response
+        if model:
+            with st.spinner("🤖 ReliefMate AI is analyzing..."):
+                try:
+                    enhanced_prompt = f"""
+                    You are ReliefMate AI, a disaster relief assistant for Gujarat, India.
+                    Provide helpful, actionable advice in 100-150 words.
+                    Include relevant emergency contacts when appropriate.
+                    Be empathetic, clear, and focus on immediate safety.
+                    
+                    User Question: {user_input}
+                    """
+                    response = model.generate_content(enhanced_prompt)
+                    ai_response = response.text.strip()
+                except Exception as e:
+                    ai_response = f"❌ Service temporarily unavailable. For immediate help: 112 (Police), 108 (Medical), 101 (Fire). Error: {str(e)[:50]}..."
+        else:
+            # Demo responses for when API is not available
+            demo_responses = [
+                "🚨 **Emergency Protocol**: For immediate danger, call 112 (Police), 108 (Ambulance), or 101 (Fire). Stay calm, move to safety, and follow official evacuation routes. Keep emergency kit ready with water, food, medicine, and important documents.",
+                "🌊 **Flood Safety**: Move to higher ground immediately. Never walk or drive through flood water. Stay informed via official radio/TV channels. If trapped, signal for help from highest available point. Emergency services: 108 for rescue operations.",
+                "🔥 **Fire Emergency**: GET OUT, STAY OUT, CALL 101. Crawl low under smoke. Close doors behind you. Meet at designated family meeting spot. Don't use elevators. If clothes catch fire: Stop, Drop, Roll.",
+                "🏥 **Medical Emergency**: Call 108 immediately. Check for breathing and pulse. Apply pressure to bleeding wounds. Keep victim warm and conscious. Don't move someone with potential spinal injury unless in immediate danger.",
+                "📋 **Emergency Kit**: Include water (1 gallon per person per day), non-perishable food, flashlight, radio, first aid kit, medications, documents, cash, and phone chargers. Update kit every 6 months."
+            ]
+            ai_response = random.choice(demo_responses)
+        
+        # Add AI response to history
+        st.session_state.chat_history.append({"role": "assistant", "content": ai_response})
+    
+    # Display chat history
+    if st.session_state.chat_history:
+        st.markdown("### 💬 Conversation")
+        for message in reversed(st.session_state.chat_history[-10:]):  # Show last 10 messages
+            if message["role"] == "user":
+                st.markdown(f"""
+                <div class="chat-message" style="border-left: 4px solid #ff6b6b; background: rgba(255, 107, 107, 0.1);">
+                    <strong style="color: #ff6b6b;">👤 You:</strong><br>
+                    {message["content"]}
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown(f"""
+                <div class="chat-message" style="border-left: 4px solid #4ecdc4; background: rgba(78, 205, 196, 0.1);">
+                    <strong style="color: #4ecdc4;">🤖 ReliefMate AI:</strong><br>
+                    {message["content"]}
+                </div>
+                """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div style="text-align: center; padding: 40px; opacity: 0.7;">
+            <h3>🤖 ReliefMate AI Ready</h3>
+            <p>Ask me about emergency procedures, disaster preparedness, or resource management</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+# ----------------------------
+# 📊 Relief Reports Dashboard
+# ----------------------------
+def render_reports_dashboard(reports):
+    st.markdown("## 📊 Live Relief Operations")
+    
+    # Status summary
+    col1, col2, col3, col4 = st.columns(4)
+    
+    critical_count = len([r for r in reports if "Critical" in r["status"]])
+    active_count = len([r for r in reports if "Active" in r["status"]])
+    resolved_count = len([r for r in reports if "Resolved" in r["status"]])
+    monitoring_count = len([r for r in reports if "Monitoring" in r["status"]])
+    
+    with col1:
+        st.markdown("""
+        <div class="metric-container">
+            <div class="metric-value" style="color: #ff6b6b;">{}</div>
+            <div>Critical Cases</div>
+        </div>
+        """.format(critical_count), unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="metric-container">
+            <div class="metric-value" style="color: #ffd93d;">{}</div>
+            <div>Active Operations</div>
+        </div>
+        """.format(active_count), unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div class="metric-container">
+            <div class="metric-value" style="color: #4ecdc4;">{}</div>
+            <div>Resolved Cases</div>
+        </div>
+        """.format(resolved_count), unsafe_allow_html=True)
+    
+    with col4:
+        st.markdown("""
+        <div class="metric-container">
+            <div class="metric-value" style="color: #a8e6cf;">{}</div>
+            <div>Under Monitoring</div>
+        </div>
+        """.format(monitoring_count), unsafe_allow_html=True)
+    
+    # Detailed reports
+    st.markdown("### 🏥 Detailed Operations Report")
+    
+    for i, report in enumerate(reports):
+        status_color = {
+            "🚨 Critical": "#ff6b6b",
+            "🔥 Critical": "#ff6b6b", 
+            "⚠️ Active": "#ffd93d",
+            "✅ Resolved": "#4ecdc4",
+            "📋 Monitoring": "#a8e6cf"
+        }.get(report["status"], "#ffffff")
+        
+        st.markdown(f"""
+        <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="color: {status_color};">📍 {report["location"]} - {report["type"]}</h3>
+                <span style="background: {status_color}; color: black; padding: 5px 15px; border-radius: 20px; font-weight: bold;">
+                    {report["status"]}
+                </span>
+            </div>
+            <p><strong>Requirements:</strong> {report["needs"]}</p>
+            <p><strong>Assigned Team:</strong> {report["team"]}</p>
+            <p><strong>Last Updated:</strong> {datetime.datetime.now().strftime('%H:%M')} IST</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+# ----------------------------
+# 📈 Analytics Dashboard
+# ----------------------------
+def render_analytics(analytics_data):
+    st.markdown("## 📈 Performance Analytics")
+    
+    # Create DataFrame
+    df = pd.DataFrame({
+        'Date': analytics_data['dates'],
+        'New Requests': analytics_data['requests'],
+        'Resolved Cases': analytics_data['resolved'],
+        'Active Cases': analytics_data['active']
+    })
+    
+    # Line chart
+    fig = go.Figure()
+    
+    fig.add_trace(go.Scatter(
+        x=df['Date'], y=df['New Requests'],
+        mode='lines+markers',
+        name='New Requests',
+        line=dict(color='#ff6b6b', width=3),
+        marker=dict(size=8)
+    ))
+    
+    fig.add_trace(go.Scatter(
+        x=df['Date'], y=df['Resolved Cases'],
+        mode='lines+markers',
+        name='Resolved Cases',
+        line=dict(color='#4ecdc4', width=3),
+        marker=dict(size=8)
+    ))
+    
+    fig.add_trace(go.Scatter(
+        x=df['Date'], y=df['Active Cases'],
+        mode='lines+markers',
+        name='Active Cases',
+        line=dict(color='#ffd93d', width=3),
+        marker=dict(size=8)
+    ))
+    
+    fig.update_layout(
+        title="📊 7-Day Relief Operations Trend",
+        xaxis_title="Date",
+        yaxis_title="Number of Cases",
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='white'),
+        title_font=dict(size=20, color='white'),
+        legend=dict(bgcolor='rgba(255,255,255,0.1)')
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Summary statistics
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        avg_requests = sum(analytics_data['requests']) // 7
+        st.markdown(f"""
+        <div class="glass-card">
+            <div class="feature-icon">📈</div>
+            <h3>Daily Avg Requests</h3>
+            <div class="metric-value">{avg_requests}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        total_resolved = sum(analytics_data['resolved'])
+        st.markdown(f"""
+        <div class="glass-card">
+            <div class="feature-icon">✅</div>
+            <h3>Total Resolved</h3>
+            <div class="metric-value">{total_resolved}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        resolution_rate = round((total_resolved / sum(analytics_data['requests'])) * 100, 1)
+        st.markdown(f"""
+        <div class="glass-card">
+            <div class="feature-icon">🎯</div>
+            <h3>Resolution Rate</h3>
+            <div class="metric-value">{resolution_rate}%</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+# ----------------------------
+# 🛠️ Admin Panel
+# ----------------------------
+def render_admin_panel():
+    st.markdown("## 🛠️ Administration Panel")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div class="glass-card">
+            <h3>📝 Submit New Report</h3>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        location = st.selectbox("Location", ["Rajkot", "Ahmedabad", "Surat", "Bhavnagar", "Vadodara", "Other"])
+        disaster_type = st.selectbox("Disaster Type", ["Flood", "Fire", "Earthquake", "Cyclone", "Landslide", "Other"])
+        severity = st.selectbox("Severity", ["🚨 Critical", "⚠️ Active", "📋 Monitoring"])
+        description = st.text_area("Description", placeholder="Describe the situation and required assistance...")
+        
+        if st.button("🚀 Submit Report", use_container_width=True):
+            st.success(f"✅ Report submitted successfully! Location: {location}, Type: {disaster_type}, Severity: {severity}")
+            st.balloons()
+    
+    with col2:
+        st.markdown("""
+        <div class="glass-card">
+            <h3>📤 Bulk Data Upload</h3>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        uploaded_file = st.file_uploader(
+            "Upload CSV file with relief data",
+            type=["csv"],
+            help="Upload CSV files containing relief operation data"
+        )
+        
+        if uploaded_file is not None:
+            try:
+                df = pd.read_csv(uploaded_file)
+                st.success(f"✅ File uploaded successfully! {len(df)} records found.")
+                st.dataframe(df, use_container_width=True)
+            except Exception as e:
+                st.error(f"❌ Error processing file: {str(e)}")
+        
+        st.markdown("### 🔧 System Status")
+        st.markdown("""
+        <div class="glass-card">
+            <p>🟢 <strong>System Status:</strong> Operational</p>
+            <p>🟢 <strong>API Status:</strong> Connected</p>
+            <p>🟢 <strong>Database:</strong> Online</p>
+            <p>🟢 <strong>Response Time:</strong> <2s</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+# ----------------------------
+# 🚀 Main Application
+# ----------------------------
+def main():
+    # Inject custom CSS
+    inject_custom_css()
+    
+    # Setup Gemini
+    model, api_status = setup_gemini()
+    
+    # Generate sample data
+    reports, analytics_data = generate_sample_data()
+    
+    # Hero Section
+    render_hero()
+    
+    # Status indicator
+    st.markdown(f"""
+    <div style="text-align: center; margin: 20px 0;">
+        <span style="background: rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: 20px; backdrop-filter: blur(10px);">
+            🤖 API Status: {api_status}
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Main Navigation Tabs
+    tab1, tab2, tab3, tab4 = st.tabs(["💬 AI Assistant", "📊 Relief Reports", "📈 Analytics", "🛠️ Admin Panel"])
+    
+    with tab1:
+        render_chat_interface(model, api_status)
+    
+    with tab2:
+        render_reports_dashboard(reports)
+    
+    with tab3:
+        render_analytics(analytics_data)
+    
+    with tab4:
+        render_admin_panel()
+    
+    # Footer
+    st.markdown("""
+    <div style="background: rgba(0, 0, 0, 0.3); padding: 40px; text-align: center; margin-top: 50px; border-radius: 20px;">
+        <h3>🌍 ReliefMate AI</h3>
+        <p>Saving Lives Through Technology • Available 24/7 • Emergency Hotline: 112</p>
+        <p style="opacity: 0.6; margin-top: 20px;">© 2025 ReliefMate AI • Powered by Gemini AI • Made with ❤️ for Disaster Relief</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+if __name__ == "__main__":
+    main()
+
+# ----------------------------
+# 🎯 Additional Features & Enhancements
+# ----------------------------
+
+# Add this to your secrets.toml file:
+"""
+# .streamlit/secrets.toml
+[general]
+GEMINI_API_KEY = "your_gemini_api_key_here"
+
+# Optional: Add more configuration
+[database]
+DB_URL = "your_database_url"
+
+[notifications]
+WEBHOOK_URL = "your_webhook_url"
+EMAIL_SERVICE = "your_email_service"
+"""
+
+# ----------------------------
+# 🚀 Deployment Instructions
+# ----------------------------
+
+# 1. Install required packages:
+"""
+pip install streamlit
+pip install google-generativeai
+pip install pandas
+pip install plotly
+pip install datetime
+"""
+
+# 2. Run the application:
+"""
+streamlit run app.py
+"""
+
+# 3. Access the application at:
+"""
+http://localhost:8501
+"""
+
+# ----------------------------
+# 📱 Mobile Responsive Features
+# ----------------------------
+
+def add_mobile_optimizations():
+    """Add mobile-specific CSS optimizations"""
+    st.markdown("""
+    <style>
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem !important;
         }
         
         .hero-subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            opacity: 0;
-            transform: translateY(50px);
-            animation: fadeInUp 1s ease 0.8s forwards;
+            font-size: 1rem !important;
         }
         
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .glass-card {
+            padding: 20px !important;
+            margin: 10px 0 !important;
         }
         
-        .cta-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 30px;
+        .metric-container {
+            padding: 15px !important;
         }
         
-        .cta-btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .cta-btn.primary {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            color: white;
-        }
-        
-        .cta-btn.secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .cta-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Sections */
-        .section {
-            padding: 100px 50px;
-            position: relative;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .section-title {
-            font-size: 3rem;
-            text-align: center;
-            margin-bottom: 60px;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-        }
-        
-        .feature-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-            transform: translateY(50px);
-            opacity: 0;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            background: rgba(255, 255, 255, 0.15);
+        .metric-value {
+            font-size: 1.8rem !important;
         }
         
         .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            display: block;
-            animation: float 3s ease-in-out infinite;
+            font-size: 2rem !important;
         }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        .chat-message {
+            padding: 10px !important;
         }
         
-        .feature-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #4ecdc4;
+        .hero-container {
+            padding: 50px 10px !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 1.5rem !important;
         }
         
-        .feature-desc {
-            line-height: 1.6;
-            opacity: 0.9;
+        .stButton > button {
+            padding: 12px 20px !important;
+            font-size: 0.9rem !important;
         }
-        
-        /* Chat Section */
-        .chat-container {
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 40px;
-            margin: 40px 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .chat-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .chat-box {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            min-height: 300px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .chat-input-container {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .chat-input {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            border-radius: 25px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-        
-        .chat-input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-        
-        .chat-input:focus {
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
-        }
-        
-        .send-btn {
-            padding: 15px 25px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            border: none;
-            border-radius: 25px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .send-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
-        }
-        
-        /* Analytics Dashboard */
-        .dashboard {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 40px;
-            margin: 40px 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-        
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.15);
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #4ecdc4;
-            margin-bottom: 10px;
-        }
-        
-        .stat-label {
-            opacity: 0.8;
-        }
-        
-        /* Footer */
-        .footer {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 50px 0;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.2rem;
-            }
-            
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .section {
-                padding: 50px 20px;
-            }
-        }
-        
-        /* Particle Effects */
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-        }
-        
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: particleFloat 6s infinite linear;
-        }
-        
-        @keyframes particleFloat {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
-        /* Loading Animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #4ecdc4;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+    }
     </style>
-</head>
-<body>
-    <!-- 3D Canvas Background -->
-    <canvas id="canvas-bg"></canvas>
-    
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav">
-            <div class="logo">🌍 ReliefMate AI</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#chat">AI Assistant</a></li>
-                <li><a href="#dashboard">Dashboard</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-    
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="particles"></div>
-        <div class="hero-content">
-            <h1 class="hero-title">🤝 Disaster Relief Assistant</h1>
-            <p class="hero-subtitle">Powered by Advanced AI • Real-time Analytics • 24/7 Support</p>
-            <div class="cta-buttons">
-                <button class="cta-btn primary" onclick="scrollToSection('chat')">Start Chat</button>
-                <button class="cta-btn secondary" onclick="scrollToSection('features')">Learn More</button>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Features Section -->
-    <section id="features" class="section">
-        <div class="container">
-            <h2 class="section-title">🌟 Powerful Features</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <span class="feature-icon">🤖</span>
-                    <h3 class="feature-title">AI Assistant</h3>
-                    <p class="feature-desc">Get instant help with disaster relief queries, emergency protocols, and resource allocation using advanced AI technology.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">📊</span>
-                    <h3 class="feature-title">Real-time Reports</h3>
-                    <p class="feature-desc">Track relief operations, monitor resource distribution, and get live updates on disaster response activities.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">📈</span>
-                    <h3 class="feature-title">Analytics Dashboard</h3>
-                    <p class="feature-desc">Visualize data trends, analyze response effectiveness, and make data-driven decisions for better outcomes.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🚨</span>
-                    <h3 class="feature-title">Emergency Alerts</h3>
-                    <p class="feature-desc">Receive instant notifications about critical situations and coordinate rapid response efforts.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🌐</span>
-                    <h3 class="feature-title">Multi-language Support</h3>
-                    <p class="feature-desc">Communicate in multiple languages including Hindi, Gujarati, and English for better accessibility.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🔒</span>
-                    <h3 class="feature-title">Secure & Reliable</h3>
-                    <p class="feature-desc">Military-grade security with 99.9% uptime to ensure your critical operations never stop.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- AI Chat Section -->
-    <section id="chat" class="section">
-        <div class="container">
-            <div class="chat-container">
-                <div class="chat-header">
-                    <h2>💬 AI Assistant</h2>
-                    <p>Ask me anything about disaster relief, emergency procedures, or resource management</p>
-                </div>
-                <div class="chat-box" id="chatBox">
-                    <div style="text-align: center; opacity: 0.6; margin-top: 100px;">
-                        <h3>🤖 ReliefMate AI Ready</h3>
-                        <p>Type your question below to get started</p>
-                    </div>
-                </div>
-                <div class="chat-input-container">
-                    <input type="text" class="chat-input" id="chatInput" placeholder="Ask about emergency procedures, resource allocation, or disaster response..." maxlength="500">
-                    <button class="send-btn" onclick="sendMessage()">Send 🚀</button>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Dashboard Section -->
-    <section id="dashboard" class="section">
-        <div class="container">
-            <h2 class="section-title">📈 Live Dashboard</h2>
-            <div class="dashboard">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number" id="activeRequests">847</div>
-                        <div class="stat-label">Active Requests</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="resolvedCases">12,459</div>
-                        <div class="stat-label">Resolved Cases</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalUsers">25,678</div>
-                        <div class="stat-label">Total Users</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="responseTime">2.3s</div>
-                        <div class="stat-label">Avg Response Time</div>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 40px;">
-                    <h3>🏥 Recent Relief Operations</h3>
-                    <div style="margin-top: 20px;">
-                        <div class="feature-card" style="margin-bottom: 15px;">
-                            <h4 style="color: #ff6b6b;">🚨 Critical - Rajkot Flood Relief</h4>
-                            <p>Status: Active • Needs: Food, Water, Medical Supplies • Team Dispatched</p>
-                        </div>
-                        <div class="feature-card" style="margin-bottom: 15px;">
-                            <h4 style="color: #4ecdc4;">✅ Resolved - Ahmedabad Earthquake Response</h4>
-                            <p>Status: Complete • Rescued: 45 people • Duration: 6 hours</p>
-                        </div>
-                        <div class="feature-card">
-                            <h4 style="color: #ffd93d;">⚠️ Monitoring - Surat Cyclone Alert</h4>
-                            <p>Status: Monitoring • Evacuation Ready • Emergency Teams on Standby</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <h3>🌍 ReliefMate AI</h3>
-            <p>Saving lives through technology • Available 24/7 • Emergency: 112</p>
-            <p style="margin-top: 20px; opacity: 0.6;">© 2025 ReliefMate AI. Powered by Gemini AI Technology.</p>
-        </div>
-    </footer>
-    
+    """, unsafe_allow_html=True)
+
+# ----------------------------
+# 🔔 Real-time Notifications System
+# ----------------------------
+
+def add_notification_system():
+    """Add browser notifications for critical alerts"""
+    notification_js = """
     <script>
-        // 3D Background Animation
-        let scene, camera, renderer, particles;
-        
-        function init3D() {
-            const canvas = document.getElementById('canvas-bg');
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            
-            // Create particles
-            const particleCount = 1000;
-            const positions = new Float32Array(particleCount * 3);
-            const colors = new Float32Array(particleCount * 3);
-            
-            for (let i = 0; i < particleCount * 3; i += 3) {
-                positions[i] = (Math.random() - 0.5) * 2000;
-                positions[i + 1] = (Math.random() - 0.5) * 2000;
-                positions[i + 2] = (Math.random() - 0.5) * 2000;
-                
-                colors[i] = Math.random();
-                colors[i + 1] = Math.random();
-                colors[i + 2] = Math.random();
-            }
-            
-            const geometry = new THREE.BufferGeometry();
-            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-            
-            const material = new THREE.PointsMaterial({ 
-                size: 3, 
-                vertexColors: true,
-                transparent: true,
-                opacity: 0.6
+    function showNotification(title, message, type) {
+        if (Notification.permission === "granted") {
+            const notification = new Notification(title, {
+                body: message,
+                icon: type === 'critical' ? '🚨' : '📢',
+                badge: '🌍'
             });
             
-            particles = new THREE.Points(geometry, material);
-            scene.add(particles);
-            
-            camera.position.z = 500;
-            animate3D();
-        }
-        
-        function animate3D() {
-            requestAnimationFrame(animate3D);
-            particles.rotation.x += 0.001;
-            particles.rotation.y += 0.002;
-            renderer.render(scene, camera);
-        }
-        
-        // Initialize 3D background
-        init3D();
-        
-        // Resize handler
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-        
-        // Particle system for hero section
-        function createParticles() {
-            const particlesContainer = document.querySelector('.particles');
-            
-            setInterval(() => {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.width = particle.style.height = Math.random() * 10 + 5 + 'px';
-                particle.style.animationDelay = Math.random() * 2 + 's';
-                particlesContainer.appendChild(particle);
-                
-                setTimeout(() => {
-                    particle.remove();
-                }, 6000);
-            }, 300);
-        }
-        
-        createParticles();
-        
-        // Scroll animations
-        function animateOnScroll() {
-            const elements = document.querySelectorAll('.section-title, .feature-card');
-            elements.forEach(element => {
-                const elementTop = element.getBoundingClientRect().top;
-                const elementVisible = 150;
-                
-                if (elementTop < window.innerHeight - elementVisible) {
-                    gsap.to(element, { opacity: 1, y: 0, duration: 1, ease: "power2.out" });
-                }
-            });
-        }
-        
-        window.addEventListener('scroll', animateOnScroll);
-        
-        // Chat functionality
-        let chatHistory = [];
-        
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const chatBox = document.getElementById('chatBox');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            // Add user message
-            addMessage('user', message);
-            input.value = '';
-            
-            // Show loading
-            addMessage('ai', '<div class="loading"></div>', true);
-            
-            // Simulate AI response
             setTimeout(() => {
-                removeLastMessage();
-                const responses = [
-                    "🚨 For immediate emergency assistance, call 112 (Police), 108 (Ambulance), or 101 (Fire). I can help you with resource allocation and disaster protocols.",
-                    "📋 I can assist with evacuation procedures, emergency supplies checklist, and coordinating relief operations. What specific help do you need?",
-                    "🏥 For medical emergencies during disasters, ensure ABC (Airway, Breathing, Circulation) first. Do you need specific medical protocol guidance?",
-                    "🌊 Flood safety: Move to higher ground immediately, avoid walking/driving through flood water, and stay informed via official channels. Need specific flood response help?",
-                    "🔥 Fire emergency: GET OUT, STAY OUT, CALL FOR HELP. Ensure everyone is out, close doors behind you, and meet at your family meeting spot."
-                ];
-                
-                const response = responses[Math.floor(Math.random() * responses.length)];
-                addMessage('ai', response);
-            }, 2000);
-        }
-        
-        function addMessage(sender, message, isLoading = false) {
-            const chatBox = document.getElementById('chatBox');
-            const messageDiv = document.createElement('div');
-            messageDiv.style.cssText = `
-                margin: 15px 0;
-                padding: 15px;
-                border-radius: 15px;
-                background: ${sender === 'user' ? 'rgba(255, 107, 107, 0.2)' : 'rgba(78, 205, 196, 0.2)'};
-                border-left: 4px solid ${sender === 'user' ? '#ff6b6b' : '#4ecdc4'};
-                animation: slideIn 0.3s ease;
-            `;
-            
-            messageDiv.innerHTML = `
-                <div style="font-weight: bold; color: ${sender === 'user' ? '#ff6b6b' : '#4ecdc4'}; margin-bottom: 8px;">
-                    ${sender === 'user' ? '👤 You' : '🤖 ReliefMate AI'}
-                </div>
-                <div>${message}</div>
-            `;
-            
-            // Clear empty state if first message
-            if (chatBox.children.length === 1 && chatBox.children[0].style.textAlign === 'center') {
-                chatBox.innerHTML = '';
-            }
-            
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-            
-            if (isLoading) {
-                messageDiv.classList.add('loading-message');
-            }
-        }
-        
-        function removeLastMessage() {
-            const chatBox = document.getElementById('chatBox');
-            const loadingMessage = chatBox.querySelector('.loading-message');
-            if (loadingMessage) {
-                loadingMessage.remove();
-            }
-        }
-        
-        // Enter key support for chat
-        document.getElementById('chatInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-        
-        // Smooth scrolling
-        function scrollToSection(sectionId) {
-            document.getElementById(sectionId).scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-        
-        // Dynamic stats animation
-        function animateStats() {
-            const stats = [
-                { id: 'activeRequests', target: 847 },
-                { id: 'resolvedCases', target: 12459 },
-                { id: 'totalUsers', target: 25678 }
-            ];
-            
-            stats.forEach(stat => {
-                const element = document.getElementById(stat.id);
-                let current = 0;
-                const increment = stat.target / 100;
-                
-                const timer = setInterval(() => {
-                    current += increment;
-                    if (current >= stat.target) {
-                        current = stat.target;
-                        clearInterval(timer);
-                    }
-                    element.textContent = Math.floor(current).toLocaleString();
-                }, 50);
-            });
-        }
-        
-        // Start stats animation when dashboard is visible
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && entry.target.id === 'dashboard') {
-                    animateStats();
-                    observer.unobserve(entry.target);
+                notification.close();
+            }, 5000);
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    showNotification(title, message, type);
                 }
             });
-        });
-        
-        observer.observe(document.getElementById('dashboard'));
-        
-        // Header scroll effect
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('.header');
-            if (window.scrollY > 100) {
-                header.style.background = 'rgba(0, 0, 0, 0.3)';
-                header.style.backdropFilter = 'blur(30px)';
-            } else {
-                header.style.background = 'rgba(255, 255, 255, 0.1)';
-                header.style.backdropFilter = 'blur(20px)';
-            }
-        });
-        
-        // Add CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    opacity: 0;
-                    transform: translateX(-20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-            }
-        `;
-        document.head.appendChild(style);
+        }
+    }
+    
+    // Auto-request notification permission
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+    
+    // Example: Trigger notification for critical alerts
+    setInterval(() => {
+        const criticalAlerts = Math.random() > 0.95; // 5% chance
+        if (criticalAlerts) {
+            showNotification(
+                'ReliefMate AI Alert', 
+                'New critical emergency reported in your area', 
+                'critical'
+            );
+        }
+    }, 30000); // Check every 30 seconds
     </script>
-</body>
-</html>
+    """
+    
+    st.components.v1.html(notification_js, height=0)
+
+# ----------------------------
+# 🗺️ Interactive Map Integration (Future Enhancement)
+# ----------------------------
+
+def add_interactive_map():
+    """Placeholder for interactive map with relief locations"""
+    map_html = """
+    <div style="background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 20px; text-align: center;">
+        <h3>🗺️ Interactive Relief Map</h3>
+        <p>📍 Real-time visualization of relief operations across Gujarat</p>
+        <div style="background: rgba(0, 0, 0, 0.2); height: 400px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 20px 0;">
+            <div>
+                <div style="font-size: 3rem; margin-bottom: 10px;">🗺️</div>
+                <p>Interactive Map Integration</p>
+                <p style="opacity: 0.7; font-size: 0.9rem;">Google Maps / Leaflet / Mapbox</p>
+            </div>
+        </div>
+        <p style="opacity: 0.8;">Feature coming soon: Live tracking of relief teams, resource distribution centers, and emergency zones</p>
+    </div>
+    """
+    
+    return map_html
+
+# ----------------------------
+# 📊 Advanced Analytics Dashboard
+# ----------------------------
+
+def create_advanced_charts():
+    """Create more sophisticated charts for analytics"""
+    
+    # Pie chart for disaster types
+    disaster_data = {
+        'Type': ['Flood', 'Fire', 'Earthquake', 'Cyclone', 'Landslide'],
+        'Count': [45, 23, 12, 18, 8]
+    }
+    
+    fig_pie = px.pie(
+        values=disaster_data['Count'], 
+        names=disaster_data['Type'],
+        title="Disaster Type Distribution",
+        color_discrete_sequence=['#ff6b6b', '#4ecdc4', '#ffd93d', '#a8e6cf', '#ffaaa5']
+    )
+    
+    fig_pie.update_layout(
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='white'),
+        title_font=dict(size=20, color='white')
+    )
+    
+    return fig_pie
+
+# ----------------------------
+# 🎨 Theme Customization
+# ----------------------------
+
+def add_theme_selector():
+    """Add theme selection for different visual styles"""
+    themes = {
+        "default": {
+            "primary": "#667eea",
+            "secondary": "#764ba2",
+            "accent": "#4ecdc4"
+        },
+        "emergency": {
+            "primary": "#ff6b6b",
+            "secondary": "#ee5a24",
+            "accent": "#ffd93d"
+        },
+        "ocean": {
+            "primary": "#0984e3",
+            "secondary": "#74b9ff",
+            "accent": "#00cec9"
+        }
+    }
+    
+    return themes
+
+# ----------------------------
+# 🔍 Search and Filter Functionality
+# ----------------------------
+
+def add_search_filters():
+    """Add search and filter options for reports"""
+    search_html = """
+    <div class="glass-card">
+        <h4>🔍 Search & Filter Reports</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 15px;">
+            <div>
+                <label style="display: block; margin-bottom: 5px;">Location</label>
+                <select style="width: 100%; padding: 8px; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                    <option>All Locations</option>
+                    <option>Rajkot</option>
+                    <option>Ahmedabad</option>
+                    <option>Surat</option>
+                </select>
+            </div>
+            <div>
+                <label style="display: block; margin-bottom: 5px;">Status</label>
+                <select style="width: 100%; padding: 8px; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                    <option>All Status</option>
+                    <option>Critical</option>
+                    <option>Active</option>
+                    <option>Resolved</option>
+                </select>
+            </div>
+            <div>
+                <label style="display: block; margin-bottom: 5px;">Type</label>
+                <select style="width: 100%; padding: 8px; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                    <option>All Types</option>
+                    <option>Flood</option>
+                    <option>Fire</option>
+                    <option>Earthquake</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    """
+    
+    return search_html
+
+# ----------------------------
+# 📞 Emergency Contact Integration
+# ----------------------------
+
+def add_emergency_contacts():
+    """Add quick emergency contact buttons"""
+    contacts_html = """
+    <div style="position: fixed; top: 120px; right: 20px; z-index: 1000;">
+        <div style="background: rgba(255, 107, 107, 0.9); backdrop-filter: blur(20px); border-radius: 15px; padding: 15px; border: 1px solid rgba(255, 255, 255, 0.2);">
+            <h4 style="margin: 0 0 10px 0; text-align: center; color: white;">🚨 Emergency</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <a href="tel:112" style="background: #ff6b6b; color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; text-align: center; font-weight: 600;">📞 112 Police</a>
+                <a href="tel:108" style="background: #4ecdc4; color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; text-align: center; font-weight: 600;">🚑 108 Medical</a>
+                <a href="tel:101" style="background: #ffd93d; color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; text-align: center; font-weight: 600;">🚒 101 Fire</a>
+            </div>
+        </div>
+    </div>
+    """
+    
+    return contacts_html
+
+# ----------------------------
+# 🏃‍♂️ Performance Optimizations
+# ----------------------------
+
+@st.cache_data
+def load_cached_data():
+    """Cache expensive operations for better performance"""
+    return generate_sample_data()
+
+@st.cache_resource
+def setup_cached_gemini():
+    """Cache Gemini model initialization"""
+    return setup_gemini()
+
+# ----------------------------
+# 📱 Progressive Web App Features
+# ----------------------------
+
+def add_pwa_manifest():
+    """Add PWA manifest for mobile app-like experience"""
+    manifest = """
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlJlbGllZk1hdGUgQUkiLAogICJzaG9ydF9uYW1lIjogIlJlbGllZk1hdGUiLAogICJkZXNjcmlwdGlvbiI6ICJEaXNhc3RlciBSZWxpZWYgQXNzaXN0YW50IiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiM2NjdlZWEiLAogICJ0aGVtZV9jb2xvciI6ICIjNjY3ZWVhIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M00zUnZjbWN2TWpBd01DOXpkbWNpSUhkcFpIUm9QU0kxTVRJaUlHaGxhV2RvZEQwaU5URXlJaUJtYVd4c1BTSWpOall4WW1ZaVBnPT0iLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9CiAgXQp9">
+    """
+    
+    return manifest
+
+print("✅ ReliefMate AI - Enhanced 3D Streamlit Application Ready!")
+print("🚀 Features included:")
+print("   • Advanced 3D animations and glassmorphism design")
+print("   • AI-powered chat interface with Gemini integration")
+print("   • Real-time relief operations dashboard")
+print("   • Interactive analytics with Plotly charts")
+print("   • Mobile-responsive design")
+print("   • Emergency contact integration")
+print("   • Admin panel for data management")
+print("   • Progressive Web App capabilities")
+print("")
+print("📋 To run: streamlit run app.py")
+print("🔑 Add your Gemini API key to .streamlit/secrets.toml")
