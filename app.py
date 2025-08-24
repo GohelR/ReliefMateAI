@@ -5,8 +5,6 @@ import json
 import time
 from datetime import datetime, timedelta
 from openai import OpenAI
-import plotly.express as px
-import plotly.graph_objects as go
 import pandas as pd
 from typing import Dict, List
 import hashlib
@@ -407,21 +405,21 @@ with st.sidebar:
         with col2:
             st.metric("🔴 Active", analytics["active_reports"], delta=0)
         
-        # Report type chart
+        # Report type chart using Streamlit bar chart
         if len(analytics["type_distribution"]) > 0:
-            fig_pie = px.pie(
-                values=analytics["type_distribution"].values,
-                names=analytics["type_distribution"].index,
-                title="Report Types",
-                color_discrete_sequence=px.colors.qualitative.Set3
-            )
-            fig_pie.update_layout(
-                paper_bgcolor='rgba(0,0,0,0)',
-                plot_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='white'),
-                height=300
-            )
-            st.plotly_chart(fig_pie, use_container_width=True)
+            st.markdown("#### 📊 Report Types")
+            chart_data = pd.DataFrame({
+                'Types': analytics["type_distribution"].index,
+                'Count': analytics["type_distribution"].values
+            })
+            st.bar_chart(chart_data.set_index('Types'))
+        
+        # Status distribution using metrics
+        st.markdown("#### 📈 Status Overview")
+        status_cols = st.columns(len(analytics["status_distribution"]))
+        for i, (status, count) in enumerate(analytics["status_distribution"].items()):
+            with status_cols[i]:
+                st.metric(f"{status.title()}", count)
     
     # Quick Stats
     st.markdown("### ⚡ Quick Actions")
@@ -735,49 +733,39 @@ with tab4:
         with col4:
             st.metric("📝 Reports Today", len([r for r in st.session_state.reports if datetime.fromisoformat(r["time"].replace('Z', '+00:00')).date() == datetime.now().date()]))
         
-        # Charts and visualizations
+        # Charts and visualizations using Streamlit components
         if analytics:
+            st.markdown("#### 📊 Analytics Dashboard")
+            
+            # Report types distribution
+            if len(analytics["type_distribution"]) > 0:
+                st.markdown("**Report Types Distribution:**")
+                type_data = pd.DataFrame({
+                    'Type': analytics["type_distribution"].index,
+                    'Count': analytics["type_distribution"].values
+                })
+                st.bar_chart(type_data.set_index('Type'))
+            
+            # Status and Priority metrics in columns
             col1, col2 = st.columns(2)
             
             with col1:
-                # Report status chart
-                if len(analytics["status_distribution"]) > 0:
-                    fig_status = px.bar(
-                        x=analytics["status_distribution"].index,
-                        y=analytics["status_distribution"].values,
-                        title="Report Status Distribution",
-                        color=analytics["status_distribution"].values,
-                        color_continuous_scale="Viridis"
-                    )
-                    fig_status.update_layout(
-                        paper_bgcolor='rgba(0,0,0,0)',
-                        plot_bgcolor='rgba(0,0,0,0)',
-                        font=dict(color='white'),
-                        height=400
-                    )
-                    st.plotly_chart(fig_status, use_container_width=True)
+                st.markdown("**Status Breakdown:**")
+                for status, count in analytics["status_distribution"].items():
+                    st.metric(f"{status.title()} Reports", count)
             
             with col2:
-                # Priority distribution
-                if len(analytics["priority_distribution"]) > 0:
-                    fig_priority = px.pie(
-                        values=analytics["priority_distribution"].values,
-                        names=analytics["priority_distribution"].index,
-                        title="Priority Distribution",
-                        color_discrete_map={
-                            'critical': '#ff4757',
-                            'high': '#ff6b35',
-                            'medium': '#ffa502',
-                            'low': '#2ed573'
-                        }
-                    )
-                    fig_priority.update_layout(
-                        paper_bgcolor='rgba(0,0,0,0)',
-                        plot_bgcolor='rgba(0,0,0,0)',
-                        font=dict(color='white'),
-                        height=400
-                    )
-                    st.plotly_chart(fig_priority, use_container_width=True)
+                st.markdown("**Priority Breakdown:**")
+                for priority, count in analytics["priority_distribution"].items():
+                    color_map = {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}
+                    icon = color_map.get(priority, "⚪")
+                    st.metric(f"{icon} {priority.title()}", count)
+            
+            # Timeline chart
+            if len(analytics["timeline"]) > 1:
+                st.markdown("**Reports Timeline:**")
+                timeline_data = analytics["timeline"].set_index('date')
+                st.line_chart(timeline_data)
         
         # Admin controls
         st.markdown("---")
