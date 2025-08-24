@@ -542,6 +542,10 @@ def render_analytics(analytics_data):
     # Line chart using Streamlit
     chart_data = df.set_index('Date')[['New Requests', 'Resolved Cases', 'Active Cases']]
     st.line_chart(chart_data)
+    data = pd.DataFrame({
+    "Disaster Reports": np.random.randint(50, 200, size=10),
+    "Aid Requests": np.random.randint(30, 150, size=10)
+    })
     
     # Bar chart for comparison
     st.markdown("### 📊 Daily Operations Comparison")
