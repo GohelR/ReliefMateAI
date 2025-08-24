@@ -5,8 +5,7 @@ import random
 import google.generativeai as genai
 from streamlit.components.v1 import html
 from datetime import date, timedelta
-import plotly.graph_objects as go
-import plotly.express as px
+import numpy as np
 
 # ----------------------------
 # 🎨 Page Config
@@ -531,45 +530,16 @@ def render_analytics(analytics_data):
         'Active Cases': analytics_data['active']
     })
     
-    # Line chart
-    fig = go.Figure()
+    # Use Streamlit's built-in charts
+    st.markdown("### 📊 7-Day Relief Operations Trend")
     
-    fig.add_trace(go.Scatter(
-        x=df['Date'], y=df['New Requests'],
-        mode='lines+markers',
-        name='New Requests',
-        line=dict(color='#ff6b6b', width=3),
-        marker=dict(size=8)
-    ))
+    # Line chart using Streamlit
+    chart_data = df.set_index('Date')[['New Requests', 'Resolved Cases', 'Active Cases']]
+    st.line_chart(chart_data)
     
-    fig.add_trace(go.Scatter(
-        x=df['Date'], y=df['Resolved Cases'],
-        mode='lines+markers',
-        name='Resolved Cases',
-        line=dict(color='#4ecdc4', width=3),
-        marker=dict(size=8)
-    ))
-    
-    fig.add_trace(go.Scatter(
-        x=df['Date'], y=df['Active Cases'],
-        mode='lines+markers',
-        name='Active Cases',
-        line=dict(color='#ffd93d', width=3),
-        marker=dict(size=8)
-    ))
-    
-    fig.update_layout(
-        title="📊 7-Day Relief Operations Trend",
-        xaxis_title="Date",
-        yaxis_title="Number of Cases",
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white'),
-        title_font=dict(size=20, color='white'),
-        legend=dict(bgcolor='rgba(255,255,255,0.1)')
-    )
-    
-    st.plotly_chart(fig, use_container_width=True)
+    # Bar chart for comparison
+    st.markdown("### 📊 Daily Operations Comparison")
+    st.bar_chart(chart_data)
     
     # Summary statistics
     col1, col2, col3 = st.columns(3)
@@ -603,6 +573,41 @@ def render_analytics(analytics_data):
             <div class="metric-value">{resolution_rate}%</div>
         </div>
         """, unsafe_allow_html=True)
+    
+    # Additional metrics using Streamlit metrics
+    st.markdown("### 📊 Key Performance Indicators")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric(
+            label="🚨 Critical Cases",
+            value="23",
+            delta="-5",
+            delta_color="inverse"
+        )
+    
+    with col2:
+        st.metric(
+            label="⚡ Avg Response Time",
+            value="2.3 min",
+            delta="-0.8 min",
+            delta_color="inverse"
+        )
+    
+    with col3:
+        st.metric(
+            label="👥 Active Teams",
+            value="12",
+            delta="+2"
+        )
+    
+    with col4:
+        st.metric(
+            label="📍 Coverage Areas",
+            value="45",
+            delta="+3"
+        )
 
 # ----------------------------
 # 🛠️ Admin Panel
@@ -886,29 +891,15 @@ def add_interactive_map():
 # ----------------------------
 
 def create_advanced_charts():
-    """Create more sophisticated charts for analytics"""
+    """Create charts using Streamlit's built-in functionality"""
     
-    # Pie chart for disaster types
-    disaster_data = {
+    # Pie chart data for disaster types
+    disaster_data = pd.DataFrame({
         'Type': ['Flood', 'Fire', 'Earthquake', 'Cyclone', 'Landslide'],
         'Count': [45, 23, 12, 18, 8]
-    }
+    })
     
-    fig_pie = px.pie(
-        values=disaster_data['Count'], 
-        names=disaster_data['Type'],
-        title="Disaster Type Distribution",
-        color_discrete_sequence=['#ff6b6b', '#4ecdc4', '#ffd93d', '#a8e6cf', '#ffaaa5']
-    )
-    
-    fig_pie.update_layout(
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white'),
-        title_font=dict(size=20, color='white')
-    )
-    
-    return fig_pie
+    return disaster_data
 
 # ----------------------------
 # 🎨 Theme Customization
@@ -1031,11 +1022,16 @@ print("🚀 Features included:")
 print("   • Advanced 3D animations and glassmorphism design")
 print("   • AI-powered chat interface with Gemini integration")
 print("   • Real-time relief operations dashboard")
-print("   • Interactive analytics with Plotly charts")
+print("   • Interactive analytics with Streamlit charts")
 print("   • Mobile-responsive design")
 print("   • Emergency contact integration")
 print("   • Admin panel for data management")
 print("   • Progressive Web App capabilities")
 print("")
-print("📋 To run: streamlit run app.py")
+print("📋 Installation:")
+print("   pip install streamlit google-generativeai pandas numpy")
+print("")
+print("🚀 To run: streamlit run app.py")
 print("🔑 Add your Gemini API key to .streamlit/secrets.toml")
+print("")
+print("🌟 No additional dependencies required - uses Streamlit built-in charts!")
