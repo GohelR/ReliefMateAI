@@ -6,6 +6,7 @@ import google.generativeai as genai
 from streamlit.components.v1 import html
 from datetime import date, timedelta
 import numpy as np
+import os
 
 # ----------------------------
 # 🎨 Page Config
@@ -305,19 +306,23 @@ def inject_custom_css():
 # 🔑 Gemini API Setup
 # ----------------------------
 def setup_gemini():
-    GEMINI_KEY = st.secrets.get("GEMINI_API_KEY", "demo_key")
-    
-    if GEMINI_KEY and GEMINI_KEY != "demo_key":
+    # READ from [general] section in .streamlit/secrets.toml
+    GEMINI_KEY = None
+    try:
+        GEMINI_KEY = st.secrets["general"]["GEMINI_API_KEY"]
+    except Exception:
+        pass
+
+    if GEMINI_KEY:
         try:
             genai.configure(api_key=GEMINI_KEY)
             model = genai.GenerativeModel("gemini-1.5-flash")
-            test_response = model.generate_content("test")
+            _ = model.generate_content("test")
             return model, "✅ Gemini AI Connected"
         except Exception as e:
             return None, f"❌ API Error: {str(e)[:50]}..."
     else:
-        return None, "⚠️ Demo Mode (Add GEMINI_API_KEY to secrets for full functionality)"
-
+        return None, "⚠️ Demo Mode (Add [general].GEMINI_API_KEY to secrets)"
 # ----------------------------
 # 📊 Sample Data Generation
 # ----------------------------
