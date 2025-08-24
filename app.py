@@ -7,6 +7,7 @@ from streamlit.components.v1 import html
 from datetime import date, timedelta
 import numpy as np
 import os
+import sys
 
 # ----------------------------
 # 🎨 Page Config
@@ -1037,6 +1038,6 @@ print("📋 Installation:")
 print("   pip install streamlit google-generativeai pandas numpy")
 print("")
 print("🚀 To run: streamlit run app.py")
-print("🔑 Add your Gemini API key to .streamlit/secrets.toml")
+print("🔑 Add your Gemini API key to .streamlit/secrets.toml", file=sys.stderr)
 print("")
 print("🌟 No additional dependencies required - uses Streamlit built-in charts!")
