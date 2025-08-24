@@ -313,7 +313,7 @@ def setup_gemini():
         GEMINI_KEY = None
         st.warning("Gemini API key not found in secrets.toml")
     
-    if GEMINI_KEY:
+    if GEMINI_KEY and GEMINI_KEY != "your_actual_gemini_api_key_here":
         try:
             genai.configure(api_key=GEMINI_KEY)
             model = genai.GenerativeModel("gemini-1.5-flash")
@@ -321,8 +321,7 @@ def setup_gemini():
         except Exception as e:
             return None, f"❌ API Error: {str(e)[:50]}..."
     else:
-        return None, "⚠️ Demo Mode (Add [general].GEMINI_API_KEY to secrets)"
-
+        return None, "⚠️ Demo Mode (Add real GEMINI_API_KEY to secrets)"
     if GEMINI_KEY:
         try:
             genai.configure(api_key=GEMINI_KEY)
