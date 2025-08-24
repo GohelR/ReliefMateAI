@@ -234,6 +234,16 @@ st.markdown(
         background: var(--accent);
         border-radius: 4px;
     }
+    
+    /* Additional text color fixes */
+    .stMarkdown p, .stMarkdown li, .stMarkdown span {
+        color: white !important;
+    }
+    
+    /* Sidebar text fix */
+    .css-1d391kg, .css-1aumxhk {
+        color: white !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -360,32 +370,16 @@ with st.container():
     col1, col2 = st.columns([1, 2])
     
     with col1:
-        # Logo upload option
-        uploaded_logo = st.file_uploader("🖼️ Upload Logo (Optional)", type=['png', 'jpg', 'jpeg'], key="logo_upload")
-        
-        if uploaded_logo is not None:
-            st.image(uploaded_logo, width=100)
-            st.markdown(
-                """
-                <div style='text-align: center; padding: 10px;'>
-                    <h1 class='title'>ReliefMate AI</h1>
-                    <p class='subtitle'>AI-Powered Disaster Relief Assistant</p>
-                    <div class='pill'>LIVE SYSTEM</div>
-                </div>
-                """, 
-                unsafe_allow_html=True
-            )
-        else:
-            st.markdown(
-                """
-                <div style='text-align: center; padding: 20px;'>
-                    <h1 class='title'>🆘 ReliefMate AI</h1>
-                    <p class='subtitle'>AI-Powered Disaster Relief Assistant</p>
-                    <div class='pill'>LIVE SYSTEM</div>
-                </div>
-                """, 
-                unsafe_allow_html=True
-            )
+        st.markdown(
+            """
+            <div style='text-align: center; padding: 20px;'>
+                <h1 class='title'>🆘 ReliefMate AI</h1>
+                <p class='subtitle'>AI-Powered Disaster Relief Assistant</p>
+                <div class='pill'>LIVE SYSTEM</div>
+            </div>
+            """, 
+            unsafe_allow_html=True
+        )
     
     with col2:
         st.markdown(
@@ -397,8 +391,8 @@ with st.container():
                     Medical assistance • Emergency supplies distribution
                 </p>
                 <div style='margin-top: 15px;'>
-                    <span class='pill'>24/7 Active</span>
-                    <span class='pill warning' style='margin-left: 10px;'>Multi-Language</span>
+                    <span class='pill' style='cursor: default;'>24/7 Active</span>
+                    <span class='pill warning' style='margin-left: 10px; cursor: default;'>Multi-Language</span>
                 </div>
             </div>
             """, 
@@ -450,7 +444,7 @@ tab1, tab2, tab3, tab4 = st.tabs(["💬 AI Assistant", "📝 Report Incident", "
 
 # Tab 1: Enhanced Chat Assistant
 with tab1:
-    st.markdown("### 🤖 AI-Powered Relief Assistant")
+    st.markdown('<h3 style="color: white !important;">🤖 AI-Powered Relief Assistant</h3>', unsafe_allow_html=True)
     st.markdown(
         """
         <div class='card'>
@@ -535,7 +529,7 @@ with tab1:
 
 # Tab 2: Enhanced Report Form
 with tab2:
-    st.markdown("### 📝 Submit Incident Report")
+    st.markdown('<h3 style="color: white !important;">📝 Submit Incident Report</h3>', unsafe_allow_html=True)
     
     with st.form("enhanced_report_form", clear_on_submit=True):
         col1, col2 = st.columns(2)
@@ -618,7 +612,7 @@ with tab2:
 
 # Tab 3: Live Reports Dashboard
 with tab3:
-    st.markdown("### 📊 Live Incident Reports")
+    st.markdown('<h3 style="color: white !important;">📊 Live Incident Reports</h3>', unsafe_allow_html=True)
     
     # Filter controls
     col1, col2, col3, col4 = st.columns(4)
@@ -727,7 +721,7 @@ with tab3:
 
 # Tab 4: Admin Panel
 with tab4:
-    st.markdown("### 🎛️ Administrative Dashboard")
+    st.markdown('<h3 style="color: white !important;">🎛️ Administrative Dashboard</h3>', unsafe_allow_html=True)
     
     # Admin authentication (basic demo)
     admin_password = st.text_input("🔐 Admin Password", type="password")
