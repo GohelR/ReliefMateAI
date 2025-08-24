@@ -6,8 +6,6 @@ import google.generativeai as genai
 from streamlit.components.v1 import html
 from datetime import date, timedelta
 import numpy as np
-import os
-import sys
 
 # ----------------------------
 # 🎨 Page Config
@@ -307,23 +305,19 @@ def inject_custom_css():
 # 🔑 Gemini API Setup
 # ----------------------------
 def setup_gemini():
-    # READ from [general] section in .streamlit/secrets.toml
-    GEMINI_KEY = None
-    try:
-        GEMINI_KEY = st.secrets["general"]["GEMINI_API_KEY"]
-    except Exception:
-        pass
-
-    if GEMINI_KEY:
+    GEMINI_KEY = st.secrets.get("GEMINI_API_KEY", "demo_key")
+    
+    if GEMINI_KEY and GEMINI_KEY != "demo_key":
         try:
             genai.configure(api_key=GEMINI_KEY)
             model = genai.GenerativeModel("gemini-1.5-flash")
-            _ = model.generate_content("test")
+            test_response = model.generate_content("test")
             return model, "✅ Gemini AI Connected"
         except Exception as e:
             return None, f"❌ API Error: {str(e)[:50]}..."
     else:
-        return None, "⚠️ Demo Mode (Add [general].GEMINI_API_KEY to secrets)"
+        return None, "⚠️ Demo Mode (Add GEMINI_API_KEY to secrets for full functionality)"
+
 # ----------------------------
 # 📊 Sample Data Generation
 # ----------------------------
@@ -1033,8 +1027,11 @@ print("   • Mobile-responsive design")
 print("   • Emergency contact integration")
 print("   • Admin panel for data management")
 print("   • Progressive Web App capabilities")
+print("")
 print("📋 Installation:")
 print("   pip install streamlit google-generativeai pandas numpy")
+print("")
 print("🚀 To run: streamlit run app.py")
-print("🔑 Add your Gemini API key to .streamlit/secrets.toml", file=sys.stderr)
+print("🔑 Add your Gemini API key to .streamlit/secrets.toml")
+print("")
 print("🌟 No additional dependencies required - uses Streamlit built-in charts!")
