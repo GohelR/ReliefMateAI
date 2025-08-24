@@ -360,16 +360,32 @@ with st.container():
     col1, col2 = st.columns([1, 2])
     
     with col1:
-        st.markdown(
-            """
-            <div style='text-align: center; padding: 20px;'>
-                <h1 class='title'>🆘 ReliefMate AI</h1>
-                <p class='subtitle'>AI-Powered Disaster Relief Assistant</p>
-                <div class='pill'>LIVE SYSTEM</div>
-            </div>
-            """, 
-            unsafe_allow_html=True
-        )
+        # Logo upload option
+        uploaded_logo = st.file_uploader("🖼️ Upload Logo (Optional)", type=['png', 'jpg', 'jpeg'], key="logo_upload")
+        
+        if uploaded_logo is not None:
+            st.image(uploaded_logo, width=100)
+            st.markdown(
+                """
+                <div style='text-align: center; padding: 10px;'>
+                    <h1 class='title'>ReliefMate AI</h1>
+                    <p class='subtitle'>AI-Powered Disaster Relief Assistant</p>
+                    <div class='pill'>LIVE SYSTEM</div>
+                </div>
+                """, 
+                unsafe_allow_html=True
+            )
+        else:
+            st.markdown(
+                """
+                <div style='text-align: center; padding: 20px;'>
+                    <h1 class='title'>🆘 ReliefMate AI</h1>
+                    <p class='subtitle'>AI-Powered Disaster Relief Assistant</p>
+                    <div class='pill'>LIVE SYSTEM</div>
+                </div>
+                """, 
+                unsafe_allow_html=True
+            )
     
     with col2:
         st.markdown(
@@ -880,29 +896,41 @@ footer_col1, footer_col2, footer_col3 = st.columns(3)
 
 with footer_col1:
     st.markdown("""
-    ### 🚨 Emergency Contacts
-    - **National Emergency:** 112
-    - **Medical Emergency:** 108  
-    - **Fire Emergency:** 101
-    - **Women Helpline:** 1091
-    """)
+    <div style='color: white;'>
+    <h3 style='color: white;'>🚨 Emergency Contacts</h3>
+    <ul style='color: white;'>
+    <li><strong style='color: white;'>National Emergency:</strong> <span style='color: #00d4ff;'>112</span></li>
+    <li><strong style='color: white;'>Medical Emergency:</strong> <span style='color: #00d4ff;'>108</span></li>
+    <li><strong style='color: white;'>Fire Emergency:</strong> <span style='color: #00d4ff;'>101</span></li>
+    <li><strong style='color: white;'>Women Helpline:</strong> <span style='color: #00d4ff;'>1091</span></li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
 with footer_col2:
     st.markdown("""
-    ### 🏥 Gujarat Disaster Management
-    - **GSDMA Helpline:** 079-23251900
-    - **Relief Commissioner:** 079-23251806
-    - **State Control Room:** 079-23259369
-    """)
+    <div style='color: white;'>
+    <h3 style='color: white;'>🏥 Gujarat Disaster Management</h3>
+    <ul style='color: white;'>
+    <li><strong style='color: white;'>GSDMA Helpline:</strong> <span style='color: #00d4ff;'>079-23251900</span></li>
+    <li><strong style='color: white;'>Relief Commissioner:</strong> <span style='color: #00d4ff;'>079-23251806</span></li>
+    <li><strong style='color: white;'>State Control Room:</strong> <span style='color: #00d4ff;'>079-23259369</span></li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
 with footer_col3:
     st.markdown("""
-    ### 🌐 Multi-Language Support
-    - **English** ✅ Available
-    - **Hindi** ✅ Available  
-    - **Gujarati** ✅ Available
-    - **More languages** 🔄 Coming soon
-    """)
+    <div style='color: white;'>
+    <h3 style='color: white;'>🌐 Multi-Language Support</h3>
+    <ul style='color: white;'>
+    <li><strong style='color: white;'>English</strong> <span style='color: #00ff88;'>✅ Available</span></li>
+    <li><strong style='color: white;'>Hindi</strong> <span style='color: #00ff88;'>✅ Available</span></li>
+    <li><strong style='color: white;'>Gujarati</strong> <span style='color: #00ff88;'>✅ Available</span></li>
+    <li><strong style='color: white;'>More languages</strong> <span style='color: #ffa502;'>🔄 Coming soon</span></li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
 # Real-time status indicator
 st.markdown("""
@@ -977,9 +1005,9 @@ if st.checkbox("🔧 Show Performance Metrics"):
 # ---------- End of Enhanced ReliefMate AI ----------
 st.markdown("""
 ---
-<div style='text-align: center; color: #8b9dc3; padding: 20px;'>
-    <p><strong>ReliefMate AI v2.0</strong> | Enhanced with animations, real-time dashboard, and advanced backend</p>
-    <p>Built for emergency response • Powered by OpenAI • Made with ❤️ for disaster relief</p>
-    <p style='font-size: 0.8rem;'>For production: Connect to Firebase/Supabase, add user authentication, implement real SMS/WhatsApp integration</p>
+<div style='text-align: center; color: white; padding: 20px;'>
+    <p style='color: white;'><strong style='color: #00d4ff;'>ReliefMate AI v2.0</strong> | Enhanced with animations, real-time dashboard, and advanced backend</p>
+    <p style='color: white;'>Built for emergency response • Powered by OpenAI • Made with ❤️ for disaster relief</p>
+    <p style='font-size: 0.8rem; color: #8b9dc3;'>For production: Connect to Firebase/Supabase, add user authentication, implement real SMS/WhatsApp integration</p>
 </div>
 """, unsafe_allow_html=True)
