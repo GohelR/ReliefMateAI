@@ -105,13 +105,6 @@ def inject_custom_css():
         transform: translateY(-1px) !important;
     }
     
-    /* Feature Cards */
-    .feature-icon {
-        font-size: 2.5rem;
-        margin-bottom: 12px;
-        display: block;
-    }
-    
     /* Chat Interface */
     .chat-container {
         background: rgba(255, 255, 255, 0.98) !important;
