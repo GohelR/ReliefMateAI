@@ -34,75 +34,75 @@ def inject_custom_css():
     
     .main {
         padding: 0 !important;
-        background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
-        color: #1e293b;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        color: #334155;
         font-family: 'Inter', sans-serif;
     }
     
     .stApp {
-        background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
     }
     
     /* Header Section - Professional & Clean */
     .hero-container {
-        background: linear-gradient(135deg, #475569 0%, #334155 100%);
-        padding: 60px 40px 40px 40px;
+        background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+        padding: 40px 40px 32px 40px;
         text-align: left;
-        border-bottom: 3px solid #0ea5e9;
-        margin-bottom: 40px;
+        border-bottom: 2px solid #06b6d4;
+        margin-bottom: 48px;
     }
     
     .hero-title {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         font-weight: 700;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         color: #ffffff;
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 12px;
     }
     
     .hero-subtitle {
-        font-size: 1.1rem;
-        margin-bottom: 20px;
-        color: #cbd5e1;
+        font-size: 1rem;
+        margin-bottom: 16px;
+        color: #e0f2fe;
         font-weight: 400;
     }
     
     .status-badge {
         display: inline-block;
-        background: rgba(16, 185, 129, 0.15);
-        color: #10b981;
+        background: rgba(236, 253, 245, 0.9);
+        color: #059669;
         padding: 6px 16px;
-        border-radius: 20px;
-        font-size: 0.9rem;
+        border-radius: 16px;
+        font-size: 0.85rem;
         font-weight: 600;
-        border: 1px solid #10b981;
+        border: 1px solid #a7f3d0;
     }
     
     .emergency-info {
-        margin-top: 20px;
-        padding: 15px;
-        background: rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
-        border-left: 4px solid #f59e0b;
+        margin-top: 16px;
+        padding: 12px 16px;
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 8px;
+        border-left: 3px solid #fbbf24;
     }
     
     /* Professional Cards */
     .glass-card {
-        background: rgba(255, 255, 255, 0.95) !important;
-        border-radius: 12px !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        border-radius: 10px !important;
         border: 1px solid #e2e8f0 !important;
         padding: 24px !important;
-        margin: 16px 0 !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-        color: #1e293b !important;
+        margin: 20px 0 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+        color: #334155 !important;
         transition: all 0.2s ease !important;
     }
     
     .glass-card:hover {
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12) !important;
-        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        transform: translateY(-1px) !important;
     }
     
     /* Feature Cards */
@@ -114,20 +114,20 @@ def inject_custom_css():
     
     /* Chat Interface */
     .chat-container {
-        background: rgba(255, 255, 255, 0.95) !important;
-        border-radius: 12px !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        border-radius: 10px !important;
         padding: 24px !important;
         border: 1px solid #e2e8f0 !important;
-        margin: 20px 0 !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        margin: 24px 0 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
     }
     
     .chat-message {
         background: #f8fafc;
-        padding: 16px;
+        padding: 14px 16px;
         border-radius: 8px;
-        margin: 12px 0;
-        border-left: 3px solid #0ea5e9;
+        margin: 10px 0;
+        border-left: 3px solid #06b6d4;
     }
     
     .chat-message strong {
@@ -136,20 +136,20 @@ def inject_custom_css():
     
     /* Professional Buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+        background: #0891b2 !important;
         color: white !important;
         border: none !important;
         border-radius: 8px !important;
-        padding: 12px 24px !important;
+        padding: 10px 24px !important;
         font-weight: 600 !important;
-        font-size: 1rem !important;
+        font-size: 0.95rem !important;
         transition: all 0.2s ease !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08) !important;
     }
     
     .stButton > button:hover {
-        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15) !important;
+        background: #0e7490 !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12) !important;
         transform: translateY(-1px) !important;
     }
     
@@ -166,8 +166,8 @@ def inject_custom_css():
     
     .stTextInput > div > div > input:focus,
     .stTextArea > div > div > textarea:focus {
-        border-color: #0ea5e9 !important;
-        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1) !important;
+        border-color: #06b6d4 !important;
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1) !important;
     }
     
     .stSelectbox > div > div {
@@ -178,54 +178,57 @@ def inject_custom_css():
     
     /* Metrics */
     .metric-container {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 10px;
         padding: 20px;
         text-align: center;
         border: 1px solid #e2e8f0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         transition: all 0.2s ease;
     }
     
     .metric-container:hover {
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
-        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
     }
     
     .metric-value {
-        font-size: 2rem;
-        font-weight: bold;
+        font-size: 2.2rem;
+        font-weight: 700;
         color: #0f172a;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
     
     .metric-label {
-        font-size: 0.9rem;
+        font-size: 0.875rem;
         color: #64748b;
         font-weight: 500;
     }
     
     /* Tab styling */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
+        gap: 10px;
         background: transparent;
-        border-bottom: 2px solid #e2e8f0;
+        border-bottom: none;
         padding-bottom: 0;
+        margin-bottom: 32px;
     }
     
     .stTabs [data-baseweb="tab"] {
-        background: transparent;
-        border-radius: 8px 8px 0 0;
+        background: #f1f5f9;
+        border-radius: 20px;
         color: #64748b;
-        padding: 12px 24px;
+        padding: 10px 24px;
         font-weight: 600;
-        border: none;
+        border: 1px solid #e2e8f0;
+        font-size: 0.95rem;
     }
     
     .stTabs [aria-selected="true"] {
-        background: white !important;
-        color: #0ea5e9 !important;
-        border-bottom: 3px solid #0ea5e9 !important;
+        background: #0891b2 !important;
+        color: white !important;
+        border: 1px solid #0891b2 !important;
+        box-shadow: 0 2px 4px rgba(8, 145, 178, 0.2) !important;
     }
     
     /* Hide Streamlit branding */
@@ -236,13 +239,17 @@ def inject_custom_css():
     /* Improved spacing */
     .block-container {
         padding-top: 2rem;
-        padding-bottom: 2rem;
+        padding-bottom: 3rem;
         max-width: 1400px;
     }
     
     h1, h2, h3 {
         color: #0f172a;
         font-weight: 700;
+    }
+    
+    h2 {
+        margin-bottom: 8px;
     }
     
     p, label {
@@ -356,16 +363,16 @@ def render_hero():
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div>
                 <h1 class="hero-title">
-                    <span style="font-size: 2rem;">🌍</span> ReliefMate AI
+                    <span style="font-size: 1.8rem;">🌍</span> ReliefMate AI
                 </h1>
                 <p class="hero-subtitle">Advanced Disaster Relief Management System</p>
-                <span class="status-badge">🟢 System Operational</span>
+                <span class="status-badge">System Operational</span>
             </div>
         </div>
-        <div class="emergency-info" style="margin-top: 20px;">
-            <strong style="color: #fbbf24;">⚠️ Emergency Hotlines:</strong>
-            <span style="color: #e5e7eb; margin-left: 20px;">
-                🚨 Police: 112  |  🏥 Medical: 108  |  🔥 Fire: 101
+        <div class="emergency-info" style="margin-top: 16px;">
+            <strong style="color: #fbbf24;">Emergency Hotlines:</strong>
+            <span style="color: #e5e7eb; margin-left: 16px;">
+                Police: 112  |  Medical: 108  |  Fire: 101
             </span>
         </div>
     </div>
@@ -375,12 +382,21 @@ def render_hero():
 # 💬 Enhanced Chat Interface
 # ----------------------------
 def render_chat_interface(model, api_status):
-    st.markdown("## 💬 AI Assistant")
-    st.markdown('<p style="color: #64748b; margin-bottom: 24px;">Get instant guidance on emergency procedures, resource allocation, and disaster response protocols</p>', unsafe_allow_html=True)
+    st.markdown("## AI Assistant")
+    st.markdown('<p style="color: #64748b; margin-bottom: 32px;">Get instant guidance on emergency procedures, resource allocation, and disaster response protocols</p>', unsafe_allow_html=True)
     
     # Initialize chat history
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
+    
+    # System Ready indicator
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 24px;">
+        <span style="background: #ecfdf5; color: #059669; padding: 6px 16px; border-radius: 16px; font-size: 0.85rem; font-weight: 600; border: 1px solid #a7f3d0;">
+            ● System Ready
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Centered chat input container
     st.markdown('<div style="max-width: 800px; margin: 0 auto;">', unsafe_allow_html=True)
@@ -445,21 +461,21 @@ def render_chat_interface(model, api_status):
                 st.markdown(f"""
                 <div class="chat-message" style="border-left: 3px solid #dc2626; background: #fef2f2;">
                     <strong style="color: #dc2626;">You:</strong><br>
-                    <span style="color: #1e293b;">{message["content"]}</span>
+                    <span style="color: #334155;">{message["content"]}</span>
                 </div>
                 """, unsafe_allow_html=True)
             else:
                 st.markdown(f"""
-                <div class="chat-message" style="border-left: 3px solid #0ea5e9; background: #f0f9ff;">
-                    <strong style="color: #0ea5e9;">ReliefMate AI:</strong><br>
-                    <span style="color: #1e293b;">{message["content"]}</span>
+                <div class="chat-message" style="border-left: 3px solid #06b6d4; background: #ecfeff;">
+                    <strong style="color: #0891b2;">ReliefMate AI:</strong><br>
+                    <span style="color: #334155;">{message["content"]}</span>
                 </div>
                 """, unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
     else:
         st.markdown("""
-        <div style="text-align: center; padding: 60px 40px; background: white; border-radius: 12px; margin: 24px auto; max-width: 600px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
-            <div style="font-size: 3rem; margin-bottom: 16px;">🤖</div>
+        <div style="text-align: center; padding: 60px 40px; background: white; border-radius: 10px; margin: 24px auto; max-width: 600px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);">
+            <div style="font-size: 3rem; margin-bottom: 16px;">💬</div>
             <h3 style="color: #0f172a; margin-bottom: 12px;">Assistant Ready</h3>
             <p style="color: #64748b;">Ask me about emergency procedures, disaster preparedness, or resource management</p>
         </div>
@@ -469,8 +485,8 @@ def render_chat_interface(model, api_status):
 # 📊 Relief Reports Dashboard
 # ----------------------------
 def render_reports_dashboard(reports):
-    st.markdown("## 📊 Live Relief Operations")
-    st.markdown('<p style="color: #64748b; margin-bottom: 24px;">Real-time monitoring of active disaster response operations</p>', unsafe_allow_html=True)
+    st.markdown("## Live Relief Operations")
+    st.markdown('<p style="color: #64748b; margin-bottom: 32px;">Real-time monitoring of active disaster response operations</p>', unsafe_allow_html=True)
     
     # Status summary
     col1, col2, col3, col4 = st.columns(4)
@@ -513,7 +529,7 @@ def render_reports_dashboard(reports):
         """.format(monitoring_count), unsafe_allow_html=True)
     
     # Detailed reports
-    st.markdown("### Detailed Operations Report")
+    st.markdown("### Operations Report")
     st.markdown("")  # spacing
     
     for i, report in enumerate(reports):
@@ -552,16 +568,16 @@ def render_reports_dashboard(reports):
         <div class="glass-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
                 <h3 style="color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;">
-                    {disaster_icon} {report["location"]} - {report["type"]}
+                    {disaster_icon} {report["location"]} • {report["type"]}
                 </h3>
-                <span style="background: {status_bg}; color: {status_color}; padding: 6px 16px; border-radius: 12px; font-weight: 600; font-size: 0.85rem; border: 1px solid {status_border};">
-                    {icon} {report["status"].replace("🚨 ", "").replace("🔥 ", "").replace("⚠️ ", "").replace("✅ ", "").replace("📋 ", "")}
+                <span style="background: {status_bg}; color: {status_color}; padding: 6px 14px; border-radius: 12px; font-weight: 600; font-size: 0.85rem; border: 1px solid {status_border};">
+                    {report["status"].replace("🚨 ", "").replace("🔥 ", "").replace("⚠️ ", "").replace("✅ ", "").replace("📋 ", "")}
                 </span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; color: #475569;">
-                <p style="margin: 0;"><strong style="color: #1e293b;">Requirements:</strong> {report["needs"]}</p>
-                <p style="margin: 0;"><strong style="color: #1e293b;">Assigned Team:</strong> {report["team"]}</p>
-                <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Last Updated: {datetime.datetime.now().strftime('%H:%M')} IST</p>
+                <p style="margin: 0;"><strong style="color: #334155;">Requirements:</strong> {report["needs"]}</p>
+                <p style="margin: 0; color: #64748b;"><strong style="color: #334155;">Team:</strong> {report["team"]}</p>
+                <p style="margin: 0; color: #94a3b8; font-size: 0.85rem;">Updated: {datetime.datetime.now().strftime('%H:%M')} IST</p>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -570,8 +586,8 @@ def render_reports_dashboard(reports):
 # 📈 Analytics Dashboard
 # ----------------------------
 def render_analytics(analytics_data):
-    st.markdown("## 📈 Performance Analytics")
-    st.markdown('<p style="color: #64748b; margin-bottom: 24px;">Data-driven insights for operational efficiency</p>', unsafe_allow_html=True)
+    st.markdown("## Performance Analytics")
+    st.markdown('<p style="color: #64748b; margin-bottom: 32px;">Data-driven insights for operational efficiency</p>', unsafe_allow_html=True)
     
     # Create DataFrame
     df = pd.DataFrame({
@@ -582,8 +598,8 @@ def render_analytics(analytics_data):
     })
     
     # Charts with better styling
-    st.markdown("### 7-Day Relief Operations Trend")
-    st.markdown('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); margin-bottom: 24px;">', unsafe_allow_html=True)
+    st.markdown("### 7-Day Operations Trend")
+    st.markdown('<div style="background: white; padding: 24px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); margin-bottom: 32px;">', unsafe_allow_html=True)
     
     # Line chart using Streamlit
     chart_data = df.set_index('Date')[['New Requests', 'Resolved Cases', 'Active Cases']]
@@ -591,8 +607,8 @@ def render_analytics(analytics_data):
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Bar chart for comparison
-    st.markdown("### Daily Operations Comparison")
-    st.markdown('<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); margin-bottom: 24px;">', unsafe_allow_html=True)
+    st.markdown("### Daily Comparison")
+    st.markdown('<div style="background: white; padding: 24px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); margin-bottom: 32px;">', unsafe_allow_html=True)
     st.bar_chart(chart_data, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
@@ -604,9 +620,9 @@ def render_analytics(analytics_data):
         avg_requests = sum(analytics_data['requests']) // 7
         st.markdown(f"""
         <div class="glass-card" style="text-align: center;">
-            <div class="feature-icon">📈</div>
-            <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Daily Avg Requests</h3>
+            <div style="font-size: 2rem; margin-bottom: 8px;">📈</div>
             <div class="metric-value">{avg_requests}</div>
+            <div class="metric-label">Avg Daily Requests</div>
         </div>
         """, unsafe_allow_html=True)
     
@@ -614,9 +630,9 @@ def render_analytics(analytics_data):
         total_resolved = sum(analytics_data['resolved'])
         st.markdown(f"""
         <div class="glass-card" style="text-align: center;">
-            <div class="feature-icon">✅</div>
-            <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Total Resolved</h3>
+            <div style="font-size: 2rem; margin-bottom: 8px;">✅</div>
             <div class="metric-value">{total_resolved}</div>
+            <div class="metric-label">Total Resolved</div>
         </div>
         """, unsafe_allow_html=True)
     
@@ -624,20 +640,20 @@ def render_analytics(analytics_data):
         resolution_rate = round((total_resolved / sum(analytics_data['requests'])) * 100, 1)
         st.markdown(f"""
         <div class="glass-card" style="text-align: center;">
-            <div class="feature-icon">🎯</div>
-            <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Resolution Rate</h3>
+            <div style="font-size: 2rem; margin-bottom: 8px;">🎯</div>
             <div class="metric-value">{resolution_rate}%</div>
+            <div class="metric-label">Resolution Rate</div>
         </div>
         """, unsafe_allow_html=True)
     
     # Additional metrics using Streamlit metrics
-    st.markdown("### Key Performance Indicators")
+    st.markdown("### Key Indicators")
     
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         st.metric(
-            label="🚨 Critical Cases",
+            label="Critical Cases",
             value="23",
             delta="-5",
             delta_color="inverse"
@@ -645,7 +661,7 @@ def render_analytics(analytics_data):
     
     with col2:
         st.metric(
-            label="⚡ Avg Response Time",
+            label="Avg Response Time",
             value="2.3 min",
             delta="-0.8 min",
             delta_color="inverse"
@@ -653,14 +669,14 @@ def render_analytics(analytics_data):
     
     with col3:
         st.metric(
-            label="👥 Active Teams",
+            label="Active Teams",
             value="12",
             delta="+2"
         )
     
     with col4:
         st.metric(
-            label="📍 Coverage Areas",
+            label="Coverage Areas",
             value="45",
             delta="+3"
         )
@@ -669,15 +685,15 @@ def render_analytics(analytics_data):
 # 🛠️ Admin Panel
 # ----------------------------
 def render_admin_panel():
-    st.markdown("## 🛠️ Administration Panel")
-    st.markdown('<p style="color: #64748b; margin-bottom: 24px;">Manage relief operations and system configuration</p>', unsafe_allow_html=True)
+    st.markdown("## Administration Panel")
+    st.markdown('<p style="color: #64748b; margin-bottom: 32px;">Manage relief operations and system configuration</p>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     
     with col1:
         st.markdown("""
         <div class="glass-card">
-            <h3 style="margin-bottom: 20px;">📝 Submit New Report</h3>
+            <h3 style="margin-bottom: 20px;">Submit New Report</h3>
         </div>
         """, unsafe_allow_html=True)
         
@@ -693,13 +709,13 @@ def render_admin_panel():
     with col2:
         st.markdown("""
         <div class="glass-card">
-            <h3 style="margin-bottom: 20px;">📤 Bulk Data Upload</h3>
+            <h3 style="margin-bottom: 20px;">Bulk Data Upload</h3>
         </div>
         """, unsafe_allow_html=True)
         
         st.markdown("""
         <div style="background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 30px; text-align: center; margin-bottom: 20px;">
-            <div style="font-size: 2rem; margin-bottom: 12px;">📁</div>
+            <div style="font-size: 2rem; margin-bottom: 12px; color: #64748b;">📁</div>
             <p style="color: #64748b; margin: 0;">Drop CSV file or click to browse</p>
         </div>
         """, unsafe_allow_html=True)
@@ -720,7 +736,7 @@ def render_admin_panel():
                 st.error(f"❌ Error processing file: {str(e)}")
     
     # System Status Section
-    st.markdown("### 🔧 System Status")
+    st.markdown("### System Status")
     
     col1, col2, col3, col4 = st.columns(4)
     
@@ -778,15 +794,15 @@ def main():
     
     # Status indicator
     st.markdown(f"""
-    <div style="text-align: center; margin: 20px 0;">
-        <span style="background: rgba(255, 255, 255, 0.95); padding: 10px 24px; border-radius: 8px; border: 1px solid #e2e8f0; color: #475569; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
-            🤖 API Status: {api_status}
+    <div style="text-align: center; margin: 24px 0 32px 0;">
+        <span style="background: rgba(255, 255, 255, 0.98); padding: 8px 20px; border-radius: 8px; border: 1px solid #e2e8f0; color: #475569; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); font-size: 0.9rem;">
+            API Status: {api_status}
         </span>
     </div>
     """, unsafe_allow_html=True)
     
     # Main Navigation Tabs
-    tab1, tab2, tab3, tab4 = st.tabs(["💬 AI Assistant", "📊 Relief Reports", "📈 Analytics", "🛠️ Admin Panel"])
+    tab1, tab2, tab3, tab4 = st.tabs(["AI Assistant", "Relief Reports", "Analytics", "Admin Panel"])
     
     with tab1:
         render_chat_interface(model, api_status)
@@ -802,16 +818,10 @@ def main():
     
     # Footer
     st.markdown("""
-    <div style="background: linear-gradient(135deg, #475569 0%, #334155 100%); padding: 40px; text-align: center; margin-top: 60px; border-radius: 12px; color: white;">
-        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px;">
-            <span style="font-size: 1.5rem;">🌍</span>
-            <h3 style="margin: 0; color: white;">ReliefMate AI</h3>
-        </div>
-        <p style="margin: 12px 0; color: #cbd5e1; font-size: 1rem;">Advanced Disaster Relief Management System</p>
-        <p style="margin: 8px 0; color: #94a3b8; font-size: 0.9rem;">Emergency Hotline: 112 (Police) | 108 (Medical) | 101 (Fire)</p>
-        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-            <p style="color: #64748b; margin: 0; font-size: 0.85rem;">© 2025 ReliefMate AI • Powered by Gemini AI • Built for Disaster Response</p>
-        </div>
+    <div style="text-align: center; margin-top: 60px; padding: 24px; border-top: 1px solid #e2e8f0;">
+        <p style="color: #94a3b8; margin: 0; font-size: 0.875rem;">
+            © 2025 ReliefMate AI • Emergency Hotline: 112 (Police) | 108 (Medical) | 101 (Fire)
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
